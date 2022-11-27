@@ -35,6 +35,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
     const user = await this.userService.findOneByEmail(credential.email);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
     const { id, tokens, password, createdAt, updatedAt, ...userRest } =
       user['dataValues'];
     const token = await this.generateToken(userRest);

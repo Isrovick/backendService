@@ -36,6 +36,14 @@ export class User extends Model<User> {
   })
   email: string;
 
+  @Field(() => GraphQLString)
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+    allowNull: true,
+  })
+  profilePictureUrl: string;
+
   @Field(() => GraphQLString, { nullable: true })
   @Column({
     type: DataType.STRING,
