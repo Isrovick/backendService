@@ -8,6 +8,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './users/users.module';
 import { RepoModule } from './repo/repo.module';
 import { AuthModule } from './auth/auth.module';
+import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
 
 @Module({
   imports: [
@@ -15,6 +16,15 @@ import { AuthModule } from './auth/auth.module';
     DatabaseModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
+      formatError: (error: GraphQLError) => {
+        const graphQLFormattedError: GraphQLFormattedError = {
+          message: error?.message,
+        };
+        return graphQLFormattedError[0] || graphQLFormattedError;
+      },
+      autoSchemaFile: 'schema.gql',
+      path: `${process.env.API_BASE_PATH}/graphql`,
+      context: ({ req }) => ({ req }),
       debug: false,
       playground: true,
     }),

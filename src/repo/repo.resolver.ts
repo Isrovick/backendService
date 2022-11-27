@@ -7,7 +7,7 @@ import { UpdateRepoInput } from './dto/update-repo.input';
 export class RepoResolver {
   constructor(private readonly repoService: RepoService) {}
 
-  @Mutation('createRepo')
+  /* @Mutation('createRepo')
   create(@Args('createRepoInput') createRepoInput: CreateRepoInput) {
     return this.repoService.create(createRepoInput);
   }
@@ -30,5 +30,5 @@ export class RepoResolver {
   @Mutation('removeRepo')
   remove(@Args('id') id: number) {
     return this.repoService.remove(id);
-  }
+  }*/
 }
