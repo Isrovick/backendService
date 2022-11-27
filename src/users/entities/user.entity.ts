@@ -1,10 +1,4 @@
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  PrimaryKey,
-} from 'sequelize-typescript';
+import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
 import { Field, ObjectType } from '@nestjs/graphql';
 import { GraphQLInt, GraphQLString } from 'graphql/type';
@@ -36,7 +30,7 @@ export class User extends Model<User> {
   })
   email: string;
 
-  @Field(() => GraphQLString)
+  @Field(() => GraphQLString, { nullable: true })
   @Column({
     type: DataType.STRING,
     unique: true,
