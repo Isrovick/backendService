@@ -27,6 +27,16 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
       context: ({ req }) => ({ req }),
       debug: false,
       playground: true,
+      cors: [
+        {
+          origin: 'http://localhost:3000',
+          credentials: true,
+        },
+        {
+          origin: 'http://frontendService',
+          credentials: true,
+        },
+      ],
     }),
     UsersModule,
     AuthModule,
