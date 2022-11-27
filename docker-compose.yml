@@ -13,12 +13,6 @@ services:
     restart: always
     env_file:
       - .env
-    environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_DB=root
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=root
-
 
 networks:
   backend:

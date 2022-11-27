@@ -1,0 +1,24 @@
+type Repo {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input CreateRepoInput {
+  # Example field (placeholder)
+  exampleField: Int
+}
+
+input UpdateRepoInput {
+  id: Int!
+}
+
+type Query {
+  repo: [Repo]!
+  repo(id: Int!): Repo
+}
+
+type Mutation {
+  createRepo(createRepoInput: CreateRepoInput!): Repo!
+  updateRepo(updateRepoInput: UpdateRepoInput!): Repo!
+  removeRepo(id: Int!): Repo
+}

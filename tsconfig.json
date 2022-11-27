@@ -16,6 +16,7 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInRoutes": false
+    "noFallthroughCasesInRoutes": false,
+    "resolveJsonModule": true
   }
 }
