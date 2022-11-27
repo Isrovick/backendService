@@ -1,15 +1,16 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
 
 @Injectable()
-export class AuthGQLGuard extends AuthGuard('local') {
-  constructor(private reflector: Reflector) {
+export class AuthGQLGuard extends AuthGuard('jwt') {
+  constructor() {
     super();
   }
-  getRequest(context: ExecutionContext) {
+  canActivate(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
-    return ctx.getContext().req;
+    const request = ctx.getContext().req;
+    return super.canActivate(new ExecutionContextHost([request]));
   }
 }

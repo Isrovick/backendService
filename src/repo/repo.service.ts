@@ -1,7 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateRepoInput } from './dto/create-repo.input';
 import { UpdateRepoInput } from './dto/update-repo.input';
-import { Repos } from './entities/repos.entity';
 import { Repo } from './entities/repo.entity';
 import { UsersService } from '../users/users.service';
 import { HttpService } from '@nestjs/axios';
@@ -20,6 +23,7 @@ export class RepoService {
 
   async update(updateRepoInput: UpdateRepoInput) {
     const { idUser, ...onlyUpdate } = updateRepoInput;
+    console.log(onlyUpdate);
     return await this.repoRepository.update<Repo>(onlyUpdate, {
       where: { idUser: updateRepoInput.idUser, name: updateRepoInput.name },
     });
@@ -31,7 +35,7 @@ export class RepoService {
     const body = {
       query: `query {
                 viewer {
-                  repositories(orderBy: {field:NAME, direction:ASC}) {
+                  repositories(first:100,orderBy: {field:NAME, direction:ASC}) {
                     pageInfo {hasNextPage, endCursor}
                     nodes {
                       name
@@ -48,23 +52,35 @@ export class RepoService {
                 }
               }`,
     };
-    const response = await this.httpService.axiosRef.post(
-      process.env.GITHUB_GRAPHQL_API,
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${credentials.platformToken}`,
-          contentType: 'application/json',
-        },
-      },
-    );
-    console.log(response.data);
+
+    const result = (await new Promise(async (resolve, reject) => {
+      await this.httpService.axiosRef
+        .post(process.env.GITHUB_GRAPHQL_API, body, {
+          headers: {
+            Authorization: `bearer ${credentials.platformToken}`,
+            contentType: 'application/json',
+          },
+        })
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    })) as any;
+    if (result.data) {
+      return result.data.viewer.repositories.nodes;
+    } else {
+      console.log(result.errors);
+      throw new InternalServerErrorException(result.errors);
+    }
   }
 
   async findOne(repoSearchInput: RepoSearchInput) {
-    return await this.repoRepository.findOne<Repo>({
+    const user = await this.repoRepository.findOne<Repo>({
       where: { idUser: repoSearchInput.idUser, name: repoSearchInput.name },
     });
+    return user['dataValues'];
   }
 
   async setFavourite(repoSearchInput: RepoSearchInput) {
@@ -76,8 +92,28 @@ export class RepoService {
   }
 
   async findAllByUserId(idUser): Promise<Array<Repo>> {
-    return await this.repoRepository.findAll<Repo>({
-      where: { idUser, active: true },
+    const nodes = await this.fetchGithubRepos(idUser);
+    return await this.processGithubNodes(idUser, nodes);
+  }
+
+  async processGithubNodes(idUser, nodes) {
+    return await nodes.map(async (node) => {
+      const repo = await this.repoRepository.findOne<Repo>({
+        where: { idUser, name: node.name },
+      });
+      if (repo) return repo['dataValues'];
+      else {
+        const newRepo = await this.repoRepository.create<Repo>({
+          idUser,
+          name: node.name,
+          url: node.url,
+          owner: node.owner.login,
+          favourite: false,
+          isPrivate: node.isPrivate,
+          active: true,
+        });
+        return newRepo['dataValues'];
+      }
     });
   }
 

@@ -9,6 +9,6 @@ export class UserRepositoryInput {
   platformUserName: string;
   @Field(() => GraphQLString)
   platformToken: string;
-  @Field(() => GraphQLString)
+  @Field(() => GraphQLString, { nullable: true })
   platformName: string;
 }

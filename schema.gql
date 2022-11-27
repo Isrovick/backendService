@@ -48,16 +48,16 @@ input CredentialsInput {
 }
 
 type Mutation {
-  setGithubCredentials(userRepositoryInput: UserRepositoryInput!): Boolean!
+  setGithubCredentials(userRepositoryInput: UserRepositoryInput!): UserRepository!
   signUp(userInput: CreateUserInput!): SignUpInfo!
-  update(repoSearchInput: RepoSearchInput!): Repo!
+  setFavourite(repoSearchInput: RepoSearchInput!): Repo!
 }
 
 input UserRepositoryInput {
   idUser: Int!
   platformUserName: String!
   platformToken: String!
-  platformName: String!
+  platformName: String
 }
 
 input CreateUserInput {

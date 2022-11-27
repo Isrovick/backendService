@@ -38,8 +38,6 @@ export class AuthService {
     const { id, tokens, password, createdAt, updatedAt, ...userRest } =
       user['dataValues'];
     const token = await this.generateToken(userRest);
-
-    console.log('userRest', userRest);
     return { user: userRest, token };
   }
 
@@ -62,17 +60,14 @@ export class AuthService {
 
   private async generateToken(user) {
     const { id, tokens, ...userRest } = user;
-    const token = await this.jwtService.signAsync(userRest);
-    return token;
+    return await this.jwtService.signAsync(userRest);
   }
 
   private async hashPassword(password) {
-    const hash = await bcrypt.hash(password, 10);
-    return hash;
+    return await bcrypt.hash(password, 10);
   }
 
   private async comparePassword(enteredPassword, dbPassword) {
-    const match = await bcrypt.compare(enteredPassword, dbPassword);
-    return match;
+    return await bcrypt.compare(enteredPassword, dbPassword);
   }
 }

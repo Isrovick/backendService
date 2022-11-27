@@ -3,6 +3,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
 import { UserRepositoryInput } from './dto/user-repository.input';
+import { UserRepository } from '../auth/entities/userRepository.entity';
 
 @Injectable()
 export class UsersService {
@@ -33,22 +34,27 @@ export class UsersService {
   async setGithubCredentials(userRepositoryInput: UserRepositoryInput) {
     const user = await this.findOneById(userRepositoryInput.idUser);
     if (!user) return null;
-    const { tokens } = user;
     let flag = false;
-    let newToken = new UserRepositoryInput();
-    for (const token of user.tokens) {
-      if (token.platformName === userRepositoryInput.platformName) {
-        flag = true;
-        break;
-        //TODO: update token
+    let newToken = userRepositoryInput;
+    newToken.platformName = process.env.GITHUB_NAME;
+    if (user.tokens) {
+      for (const token of user.tokens) {
+        if (token && token.platformName == process.env.GITHUB_NAME) {
+          flag = true;
+          //TODO: update token
+          return newToken;
+        }
       }
-    }
-    if (!flag) {
-      newToken = userRepositoryInput;
-      newToken.platformName = process.env.GITHUB_NAME;
+      if (!flag) {
+        user.tokens.push(userRepositoryInput);
+      }
+    } else {
+      user.tokens = [];
       user.tokens.push(userRepositoryInput);
-      await this.update({ id: user.id, tokens: user.tokens });
     }
+
+    await this.update({ id: user.id, tokens: user.tokens });
+    return newToken as UserRepository;
   }
 
   async update(updateUserInput: UpdateUserInput) {
