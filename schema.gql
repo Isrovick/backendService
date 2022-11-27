@@ -2,8 +2,19 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Repo {
+  idUser: Int!
+  name: String!
+  url: String!
+  owner: String!
+  isPrivate: Boolean!
+  favourite: Boolean!
+  active: Boolean!
+}
+
 type Query {
   login(credentials: CredentialsInput!): String!
+  findAll(id: Float!): [Repo!]!
 }
 
 input CredentialsInput {
@@ -12,13 +23,26 @@ input CredentialsInput {
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): String!
+  setGithubCredentials(userRepositoryInput: UserRepositoryInput!): Boolean!
   signUp(userInput: CreateUserInput!): String!
+  update(repoSearchInput: RepoSearchInput!): Repo!
+}
+
+input UserRepositoryInput {
+  idUser: Int!
+  platformUserName: String!
+  platformToken: String!
+  platformName: String!
 }
 
 input CreateUserInput {
   name: String!
   email: String!
   password: String!
-  gender: String!
+  tokens: String
+}
+
+input RepoSearchInput {
+  idUser: Int!
+  name: String!
 }

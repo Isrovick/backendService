@@ -1,5 +1,6 @@
 import { Table, Column, Model, DataType } from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
+import { UserRepositoryInput } from '../dto/user-repository.input';
 
 @Table
 export class User extends Model<User> {
@@ -29,8 +30,8 @@ export class User extends Model<User> {
   password: string;
 
   @Column({
-    type: DataTypes.STRING,
+    type: DataTypes.JSONB,
     allowNull: true,
   })
-  tokens: string[];
+  tokens: UserRepositoryInput[];
 }

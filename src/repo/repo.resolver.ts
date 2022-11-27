@@ -1,11 +1,21 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { RepoService } from './repo.service';
-import { CreateRepoInput } from './dto/create-repo.input';
-import { UpdateRepoInput } from './dto/update-repo.input';
+import { Repo } from './entities/repo.entity';
+import { RepoSearchInput } from './dto/repo-search.input';
 
 @Resolver('Repo')
 export class RepoResolver {
   constructor(private readonly repoService: RepoService) {}
+
+  @Query(() => [Repo])
+  findAll(@Args('id') id: number) {
+    return this.repoService.findAllByUserId(id);
+  }
+
+  @Mutation(() => Repo)
+  update(@Args('repoSearchInput') repoSearchInput: RepoSearchInput) {
+    return this.repoService.update(repoSearchInput);
+  }
 
   /* @Mutation('createRepo')
   create(@Args('createRepoInput') createRepoInput: CreateRepoInput) {

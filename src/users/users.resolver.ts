@@ -3,15 +3,22 @@ import { UsersService } from './users.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { GraphQLString } from 'graphql/type';
+import { UserRepositoryInput } from './dto/user-repository.input';
 
 @Resolver('User')
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
+  @Mutation(() => Boolean)
+  setGithubCredentials(
+    @Args('userRepositoryInput') userRepositoryInput: UserRepositoryInput,
+  ) {
+    return this.usersService.setGithubCredentials(userRepositoryInput);
+  }
+  /*
   @Mutation(() => GraphQLString, { name: 'createUser' })
   create(@Args('createUserInput') createUserInput: CreateUserInput) {
     return this.usersService.create(createUserInput);
   }
-  /*
   @Query('users')
   findAll() {
     return this.usersService.findAll();

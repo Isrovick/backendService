@@ -1,4 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
+import { UserRepositoryInput } from './user-repository.input';
 @InputType()
 export class CreateUserInput {
   @Field(() => String)
@@ -7,6 +8,6 @@ export class CreateUserInput {
   email: string;
   @Field(() => String)
   password: string;
-  @Field(() => String)
-  gender: string;
+  @Field(() => String, { nullable: true })
+  tokens: UserRepositoryInput[];
 }
