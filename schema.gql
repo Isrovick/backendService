@@ -2,6 +2,21 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UserRepository {
+  idUser: Int!
+  platformUserName: String!
+  platformToken: String!
+  platformName: String!
+}
+
+type User {
+  id: Int
+  name: String!
+  email: String!
+  password: String
+  tokens: [UserRepository!]
+}
+
 type Repo {
   idUser: Int!
   name: String!
@@ -12,8 +27,18 @@ type Repo {
   active: Boolean!
 }
 
+type loginInfo {
+  user: User!
+  token: String!
+}
+
+type SignUpInfo {
+  user: User!
+  token: String!
+}
+
 type Query {
-  login(credentials: CredentialsInput!): String!
+  login(credentials: CredentialsInput!): loginInfo!
   findAll(id: Float!): [Repo!]!
 }
 
@@ -24,7 +49,7 @@ input CredentialsInput {
 
 type Mutation {
   setGithubCredentials(userRepositoryInput: UserRepositoryInput!): Boolean!
-  signUp(userInput: CreateUserInput!): String!
+  signUp(userInput: CreateUserInput!): SignUpInfo!
   update(repoSearchInput: RepoSearchInput!): Repo!
 }
 

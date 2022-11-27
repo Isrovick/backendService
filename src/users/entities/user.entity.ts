@@ -1,21 +1,34 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
-import { UserRepositoryInput } from '../dto/user-repository.input';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { GraphQLInt, GraphQLString } from 'graphql/type';
+import { UserRepository } from '../../auth/entities/userRepository.entity';
 
+@ObjectType()
 @Table
 export class User extends Model<User> {
+  @Field(() => GraphQLInt, { nullable: true })
   @Column({
     primaryKey: true,
     type: DataType.INTEGER,
-    allowNull: false,
+    autoIncrement: true,
   })
   id: number;
+
+  @Field(() => GraphQLString)
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   name: string;
 
+  @Field(() => GraphQLString)
   @Column({
     type: DataType.STRING,
     unique: true,
@@ -23,15 +36,17 @@ export class User extends Model<User> {
   })
   email: string;
 
+  @Field(() => GraphQLString, { nullable: true })
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   password: string;
 
+  @Field(() => [UserRepository], { nullable: true })
   @Column({
     type: DataTypes.JSONB,
     allowNull: true,
   })
-  tokens: UserRepositoryInput[];
+  tokens: UserRepository[];
 }

@@ -4,10 +4,14 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { GraphQLString } from 'graphql/type';
 import { UserRepositoryInput } from './dto/user-repository.input';
+import { UseGuards } from '@nestjs/common';
+import { AuthGQLGuard } from '../auth/jwt.guard';
 
 @Resolver('User')
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
+
+  @UseGuards(AuthGQLGuard)
   @Mutation(() => Boolean)
   setGithubCredentials(
     @Args('userRepositoryInput') userRepositoryInput: UserRepositoryInput,
