@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  backend-service:
+    container_name: backend-service
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - backend
+    ports:
+      - 5080:80
+    restart: always
+    env_file:
+      - .env
+
+networks:
+  backend:
+    external: true
+    name: net_secured
