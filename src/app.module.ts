@@ -29,12 +29,7 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql/error';
       playground: true,
       cors: [
         {
-          origin: 'http://localhost:3000',
-          credentials: true,
-        },
-        {
-          origin: 'http://frontendService',
-          credentials: true,
+          origin: ['http://localhost:3000', process.env.FRONTEND_URL],
         },
       ],
     }),
