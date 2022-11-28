@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from './entities/user.entity';
@@ -14,6 +14,20 @@ export class UsersService {
     return await this.userRepository.create<User>(createUserInput);
   }
 
+  async getUser(id: number): Promise<User> {
+    const user = await this.findOneById(id);
+    if (!user) {
+      throw new BadRequestException("User doesn't exist");
+    }
+    const userInfo = user['dataValues'];
+
+    userInfo.password = '*********';
+    userInfo.tokens = user.tokens.map((token) => {
+      token.platformToken = '*********';
+      return token;
+    });
+    return userInfo;
+  }
   async findOneByEmail(email: string): Promise<User> {
     return await this.userRepository.findOne<User>({ where: { email } });
   }
@@ -32,7 +46,9 @@ export class UsersService {
     return null;
   }
   async setGithubCredentials(userRepositoryInput: UserRepositoryInput) {
-    const user = await this.findOneById(userRepositoryInput.idUser);
+    const _user = await this.findOneById(userRepositoryInput.idUser);
+    if (!_user) throw new BadRequestException("User doesn't exist");
+    const user = _user['dataValues'];
     if (!user) return null;
     let flag = false;
     let newToken = userRepositoryInput;

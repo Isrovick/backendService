@@ -13,6 +13,7 @@ type User {
   id: Int
   name: String!
   email: String!
+  profilePictureUrl: String
   password: String
   tokens: [UserRepository!]
 }
@@ -38,6 +39,7 @@ type SignUpInfo {
 }
 
 type Query {
+  getUser(id: Float!): User!
   login(credentials: CredentialsInput!): loginInfo!
   findAll(id: Float!): [Repo!]!
 }
