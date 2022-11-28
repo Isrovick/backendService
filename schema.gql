@@ -1,0 +1,75 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type UserRepository {
+  idUser: Int!
+  platformUserName: String!
+  platformToken: String!
+  platformName: String!
+}
+
+type User {
+  id: Int
+  name: String!
+  email: String!
+  profilePictureUrl: String
+  password: String
+  tokens: [UserRepository!]
+}
+
+type Repo {
+  idUser: Int!
+  name: String!
+  url: String!
+  owner: String!
+  isPrivate: Boolean!
+  favourite: Boolean!
+  active: Boolean!
+}
+
+type loginInfo {
+  user: User!
+  token: String!
+}
+
+type SignUpInfo {
+  user: User!
+  token: String!
+}
+
+type Query {
+  getUser(id: Float!): User!
+  login(credentials: CredentialsInput!): loginInfo!
+  findAll(id: Float!): [Repo!]!
+}
+
+input CredentialsInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  setGithubCredentials(userRepositoryInput: UserRepositoryInput!): UserRepository!
+  signUp(userInput: CreateUserInput!): SignUpInfo!
+  setFavourite(repoSearchInput: RepoSearchInput!): Repo!
+}
+
+input UserRepositoryInput {
+  idUser: Int!
+  platformUserName: String!
+  platformToken: String!
+  platformName: String
+}
+
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+  tokens: String
+}
+
+input RepoSearchInput {
+  idUser: Int!
+  name: String!
+}
