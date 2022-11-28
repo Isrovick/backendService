@@ -48,7 +48,7 @@ export class UsersService {
   async setGithubCredentials(userRepositoryInput: UserRepositoryInput) {
     const _user = await this.findOneById(userRepositoryInput.idUser);
     if (!_user) throw new BadRequestException("User doesn't exist");
-    const user = _user['dataValues'];
+    let user = _user['dataValues'];
     if (!user) return null;
     let flag = false;
     let newToken = userRepositoryInput;
@@ -57,8 +57,15 @@ export class UsersService {
       for (const token of user.tokens) {
         if (token && token.platformName == process.env.GITHUB_NAME) {
           flag = true;
-          //TODO: update token
-          return newToken;
+          user.tokens = user.tokens.map((token) => {
+            if (token.platformName == process.env.GITHUB_NAME) {
+              token.platformToken = userRepositoryInput.platformToken;
+              token.platformUserName = userRepositoryInput.platformUserName;
+            }
+            return token;
+          });
+          await this.update({ id: user.id, tokens: user.tokens });
+          return token;
         }
       }
       if (!flag) {
