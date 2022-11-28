@@ -29,7 +29,9 @@ export class UsersService {
     return userInfo;
   }
   async findOneByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne<User>({ where: { email } });
+    return await this.userRepository.findOne<User>({
+      where: { email: email.toLowerCase() },
+    });
   }
 
   async findOneById(id: number): Promise<User> {
