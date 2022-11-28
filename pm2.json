@@ -1,0 +1,12 @@
+{
+  "name": "backend",
+  "cwd": "/app/src",
+  "script": "node",
+  "args": "main",
+  "env": {
+    "API_PORT": 80,
+    "API_BASE_PATH": "/api",
+    "API_DOC": true,
+    "API_HOSTNAME": "localhost"
+  }
+}
